@@ -40,8 +40,16 @@ class Player(GameSprite):
             self.rect.y += self.speed
 
 ball = GameSprite('tennis.png', 300, 250, 4, 50, 50)
-player1 = Player('Rocket.png', win_width - 25, 4, 4, 20, 100)
+player1 = Player('Rocket.png', win_width - 25, 400, 4, 20, 100)
 player2 = Player('Rocket.png', 10, 4, 4, 20, 100)
+
+speed_y = 3
+speed_x = 3
+
+font.init()
+font = font.Font(None, 50)
+lose1 = font.render("Игрок номер 1 проиграл!", True, (180, 0, 0))
+lose2 = font.render("Игрок номер 2 проиграл!", True, (180, 0, 0))
 
 while game:
     for e in event.get():
@@ -49,13 +57,25 @@ while game:
             game = False
 
     if finish != True:
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
+        window.fill((210, 255, 255))
         player1.update_rocet1()
-        window.fill((210, 255, 255))
         player2.update_rpcet2()
-        window.fill((210, 255, 255))
         ball.reset()
         player1.reset()
         player2.reset()
+        if ball.rect.y > win_height-50 or ball.rect.y < 0:
+            speed_y *= -1
+
+        if sprite.collide_rect(player1, ball) or sprite.collide_rect(player2, ball):
+            speed_x *= -1
+        if ball.rect.x > win_width:
+            finish = True
+            window.blit(lose1, (250, 250))
+        if ball.rect.x < -50:
+            finish = True
+            window.blit(lose2, (250, 250))
 
     display.update()
     clock.tick(FPS)
